@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFINITY.exe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #19232d;
+            touch-action: none;
+            font-family: 'Playfair Display', serif, Arial, sans-serif;
+            color: #f2f2f2;
+        }
+        
+        /* Video background styles */
+        #video-bg {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 0;
+            object-fit: cover;
+        }
+        
+        /* Overlay to make content more readable against video */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(25, 35, 45, 0.5); /* Darkened overlay matching site theme */
+            z-index: 1;
+        }
+         
+        .content-container {
+            position: absolute;
+            z-index: 2;
+            max-width: 800px;
+            width: 95%;
+            height: 90vh;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
+            background-color: rgba(30, 40, 50, 0.85);
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+  
+        .content-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+  
+        .app-name {
+            font-weight: 800;
+            font-size: 2.4rem;
+            text-align: center;
+            color: #00ff00;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0, 255, 0, 0.3);
+        }
+  
+        h1 {
+            color: #00ff00;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+  
+        p {
+            line-height: 1.8;
+            color: #e0e0e0;
+        }
+  
+        /* Button styling */
+        button, .btn {
+            background: #263747;
+            color: white;
+            border: 1px solid #00ff00;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-weight: 600;
+        }
+  
+        button:hover, .btn:hover {
+            background: #00ff00;
+            color: #19232d;
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
+            transform: translateY(-2px);
+        }
+  
+        /* Class for the enable/disable buttons */
+        .enable, .disable {
+            background-color: #263747;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            color: white;
+            padding: 8px 20px;
+            margin: 5px;
+        }
+  
+        .enable:hover {
+            background-color: #00ff00;
+            color: #19232d;
+        }
+  
+        .disable:hover {
+            background-color: #263747;
+            border-color: #bd4b4b;
+            color: #bd4b4b;
+        }
+  
+        /* For the emulator section */
+        .emulator-header {
+            background-color: rgba(25, 35, 45, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+  
+        /* For the bit selector */
+        .bit-selector {
+            display: flex;
+            align-items: center;
+        }
+  
+        .bit-selector button {
+            border: none;
+            background-color: transparent;
+            color: white;
+            padding: 8px 15px;
+        }
+  
+        .bit-selector button.active {
+            background-color: #00ff00;
+            color: #19232d;
+        }
+  
+        /* For feature sections */
+        .feature-section {
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            padding: 15px 0;
+            margin-bottom: 15px;
+        }
+  
+        .feature-name {
+            font-weight: bold;
+            color: #00ff00;
+            margin-bottom: 5px;
+        }
+  
+        .feature-description {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+        
+        /* Tab styles */
+        .tabs-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+  
+        .tabs-container.sticky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 3;
+            background-color: rgba(30, 40, 50, 0.95);
+            padding: 10px 0;
+            border-radius: 5px;
+            width: 100%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tab-button {
+            width: 120px;
+            text-align: center;
+            padding: 12px 25px;
+            background-color: #263747;
+            color: white;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background-color: #00ff00;
+            color: #19232d;
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Key binding input styles */
+        .key-input {
+            background: rgba(38, 55, 71, 0.3);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            width: 50px;
+            height: 35px;
+            text-align: center;
+            border-radius: 8px;
+            margin-right: 15px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .key-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            background: rgba(38, 55, 71, 0.95);
+            transform: translateY(-1px);
+        }
+
+        .key-input::placeholder {
+            color: rgba(0, 255, 0, 0.5);
+            font-size: 12px;
+        }
+
+        .key-label {
+            color: #00ff00;
+            font-size: 12px;
+            margin-right: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .key-binding-container {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        /* Status indicator styles */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-indicator::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, transparent 70%);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-indicator.enabled {
+            background: linear-gradient(135deg, #00ff00, #00cc00);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.4),
+                        0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .status-indicator.disabled {
+            background: linear-gradient(135deg, #bd4b4b, #8a3636);
+            box-shadow: 0 0 10px rgba(189, 75, 75, 0.3),
+                        0 0 20px rgba(189, 75, 75, 0.15);
+        }
+
+        .status-text {
+            color: #00ff00;
+            font-size: 11px;
+            margin-left: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .status-container {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+            padding: 3px 8px;
+            background: rgba(38, 55, 71, 0.3);
+            border-radius: 15px;
+            border: 1px solid #00ff00;
+            transition: all 0.3s ease;
+        }
+
+        .status-container:hover {
+            background: rgba(38, 55, 71, 0.5);
+            border-color: rgba(0, 255, 0, 0.2);
+        }
+
+        /* Add animation for status change */
+        @keyframes statusPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes statusGlow {
+            0% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.2); }
+            50% { box-shadow: 0 0 15px rgba(0, 255, 0, 0.6), 0 0 25px rgba(0, 255, 0, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.2); }
+        }
+
+        .status-indicator.changing {
+            animation: statusPulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .status-indicator.enabled {
+            animation: statusGlow 2s infinite;
+        }
+
+        .status-indicator.disabled {
+            animation: none;
+        }
+
+        /* Add hover effect for status container */
+        .status-container:hover .status-indicator::before {
+            opacity: 0.8;
+        }
+
+        .status-container:hover .status-text {
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Remove color customization styles */
+        .color-customizer, .color-button, .color-popup, .color-wheel, .color-selector {
+            display: none !important;
+        }
+
+        .enable.active {
+            background-color: #00ff00 !important;
+            color: #19232d !important;
+            box-shadow: 0 0 15px #00ff00 !important;
+        }
+    </style>
+  </head>
+  <body>
+    <!-- Video background -->
+    <video autoplay muted loop id="video-bg">
+      <source src="https://dev-codecrush.pantheonsite.io/wp-content/uploads/2025/04/bg.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+    
+    <!-- Overlay to improve contrast against the video -->
+    <div class="bg-overlay"></div>
+    
+    <!-- Content container where you can add your elements -->
+    <div class="content-container">
+      <div class="emulator-header">
+        <h1 class="app-name">INFINITY.exe</h1>
+        <div class="bit-selector float-end">
+          <button class="bit-32 active">32bit</button>
+          <button class="bit-64">64bit</button>
+        </div>
+      </div>
+      
+      <!-- New Tab navigation -->
+      <div class="tabs-container">
+        <button class="tab-button active" data-tab="external">EXTERNAL</button>
+        <button class="tab-button" data-tab="visual">VISUAL</button>
+        <button class="tab-button" data-tab="misc">MISC</button>
+      </div>
+      
+      <!-- External Tab Content -->
+      <div id="external" class="tab-content active">
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">SPEED</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AIMBOT PRO</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AIMBOT DRAG</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AIMBODY</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AIMBOOT NICK</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AIMBOT DRAG V12</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AWM SCOP</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AIM AWM</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">QUICK SWITCH</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Visual Tab Content -->
+      <div id="visual" class="tab-content">
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">CHAMAS MENU</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">CHAMAS BLEU</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">GLOWALL 3D</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Misc Tab Content -->
+      <div id="misc" class="tab-content">
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">WALLHACK GLOWAL</div>
+              <div class="feature-description">Apply After Each Match</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">FAST RELOAD ALL GUN</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AIMBOT X4</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">AIMBOT X2</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">NO RECOIL</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">DIAMOND 18,000</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">CAMERA V2</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">MAGIC</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">GOST MOD</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-section">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="feature-name">BYPASS EMULATOR</div>
+              <div class="feature-description">Apply One Time In Login</div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="key-binding-container">
+                <span class="key-label">Key:</span>
+                <input type="text" class="key-input" maxlength="1" placeholder="...">
+              </div>
+              <div class="status-container">
+                <div class="status-indicator disabled"></div>
+                <span class="status-text">Disabled</span>
+              </div>
+              <button class="enable">Enable</button>
+              <button class="disable">Disable</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      "use strict";
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const tabsContainer = document.querySelector('.tabs-container');
+        const contentContainer = document.querySelector('.content-container');
+        let isSticky = false;
+
+        // Store original width and position
+        let originalWidth = tabsContainer.offsetWidth;
+        let originalLeft = tabsContainer.offsetLeft;
+
+        // Handle scroll for sticky tabs
+        window.addEventListener('scroll', function() {
+          const contentRect = contentContainer.getBoundingClientRect();
+          
+          if (contentRect.top <= 0 && !isSticky) {
+            tabsContainer.classList.add('sticky');
+            tabsContainer.style.width = '100%';
+            isSticky = true;
+          } else if (contentRect.top > 0 && isSticky) {
+            tabsContainer.classList.remove('sticky');
+            tabsContainer.style.width = originalWidth + 'px';
+            tabsContainer.style.left = originalLeft + 'px';
+            isSticky = false;
+          }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+          if (!isSticky) {
+            originalWidth = tabsContainer.offsetWidth;
+            originalLeft = tabsContainer.offsetLeft;
+          }
+        });
+
+        tabButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            button.classList.add('active');
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+          });
+        });
+
+        const bitButtons = document.querySelectorAll('.bit-selector button');
+        bitButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            bitButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+          });
+        });
+
+        // Function to update status
+        function updateStatus(featureSection, isEnabled) {
+          const statusIndicator = featureSection.querySelector('.status-indicator');
+          const statusText = featureSection.querySelector('.status-text');
+          
+          statusIndicator.classList.add('changing');
+          
+          setTimeout(() => {
+            statusIndicator.classList.remove('changing');
+            if (isEnabled) {
+              statusIndicator.classList.remove('disabled');
+              statusIndicator.classList.add('enabled');
+              statusText.textContent = 'Enabled';
+            } else {
+              statusIndicator.classList.remove('enabled');
+              statusIndicator.classList.add('disabled');
+              statusText.textContent = 'Disabled';
+            }
+          }, 300);
+        }
+
+        // Handle key input
+        const keyInputs = document.querySelectorAll('.key-input');
+        keyInputs.forEach(input => {
+          input.addEventListener('keydown', (e) => {
+            e.preventDefault();
+            input.value = e.key.toUpperCase();
+          });
+
+          input.addEventListener('focus', () => {
+            input.value = '';
+          });
+        });
+
+        // Handle key press for features
+        document.addEventListener('keydown', (e) => {
+          const key = e.key.toUpperCase();
+          keyInputs.forEach(input => {
+            if (input.value === key) {
+              const parentSection = input.closest('.feature-section');
+              const enableBtn = parentSection.querySelector('.enable');
+              const disableBtn = parentSection.querySelector('.disable');
+              
+              if (enableBtn.classList.contains('active')) {
+                enableBtn.classList.remove('active');
+                disableBtn.classList.add('active');
+                updateStatus(parentSection, false);
+              } else {
+                enableBtn.classList.add('active');
+                disableBtn.classList.remove('active');
+                updateStatus(parentSection, true);
+              }
+            }
+          });
+        });
+
+        // Handle enable/disable buttons
+        const featureButtons = document.querySelectorAll('.enable, .disable');
+        featureButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const parentSection = button.closest('.feature-section');
+            const enableBtn = parentSection.querySelector('.enable');
+            const disableBtn = parentSection.querySelector('.disable');
+            
+            if (button.classList.contains('enable')) {
+              enableBtn.classList.add('active');
+              disableBtn.classList.remove('active');
+              updateStatus(parentSection, true);
+            } else {
+              enableBtn.classList.remove('active');
+              disableBtn.classList.add('active');
+              updateStatus(parentSection, false);
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
